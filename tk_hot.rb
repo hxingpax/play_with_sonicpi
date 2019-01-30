@@ -1,39 +1,30 @@
-comment do require_relative 'bk.rb' end
+comment do
+  require_relative 'bk.rb'
+end
 
-use_bpm 100
+class MyNotes
+  attr_reader :n_beats
 
-class SimpleNotes
-  attr_reader :notes, :interval
-
-  def initialize(notes, interval)
+  def initialize(notes, note_group_len)
     @notes = notes
-    @interval = interval
+    @interval = 1.0 / note_group_len
+    @n_beats = notes.length / note_group_len
   end
-end
 
-def put_notes(ar, ns, ns_unit)
-  ar << SimpleNotes.new(ns, 1.0 / ns_unit)
-end
-
-def ite_sns(sn_array)
-  sn_array.each do |sn|
-    sn.notes.each do |note|
-      yield note if note
-      sleep sn.interval
-    end
-  end
-end
-
-def fast_ite_sns(sn_array)
-  sn_array.each do |sn|
-    gap = sn.interval / 2.0
-    sn.notes.each do |note|
+  def ite(times_speed_up = 1)
+    gap = @interval / times_speed_up
+    @notes.each do |note|
       yield note if note
       sleep gap
     end
   end
+
+  def go
+    ite {|note| play note}
+  end
 end
 
+use_bpm 100
 
 A = [:c6, :c6, :c6, :c6, :c6, :c6, :c6, :b5, nil, :b5, :c6, nil, :g5, :g5, :a5, nil,
      :c6, :c6, :c6, :c6, :c6, :c6, :c6, :b5, nil, :b5, :c6, nil, :g5, :g5, :a5, nil,
@@ -57,59 +48,42 @@ E = [:a2, nil, :a3, nil, :a2, nil, :a3, nil, :a2, nil, :a3, nil, :a2, nil, :a3, 
      :f2, nil, :f3, nil, :f2, nil, :f3, nil, :f2, nil, :f3, nil, :f2, nil, :f3, nil,
      :d3, nil, :d4, nil, :d3, nil, :d4, nil, :e3, nil, :e4, nil, :e3, nil, :e4, nil]
 
-BEATS = E.length / 4
+notes_a = MyNotes.new(A, 4)
+notes_b = MyNotes.new(B, 4)
+notes_c = MyNotes.new(C, 4)
+notes_d = MyNotes.new(D, 4)
+notes_e = MyNotes.new(E, 4)
 
-RA = []
-put_notes RA, A, 4
-
-RB = []
-put_notes RB, B, 4
-
-RC = []
-put_notes RC, C, 4
-
-RD = []
-put_notes RD, D, 4
-
-RE = []
-put_notes RE, E, 4
-
+raise '!' unless notes_a.n_beats == notes_b.n_beats &&
+    notes_a.n_beats == notes_c.n_beats &&
+    notes_a.n_beats == notes_d.n_beats &&
+    notes_a.n_beats == notes_e.n_beats
 
 live_loop :director do
-  sleep BEATS
+  sleep notes_a.n_beats
 end
 
 live_loop :a do
   sync :director
-  ite_sns RA do |note|
-      play note
-  end
+  notes_a.go
 end
 
 live_loop :b do
   sync :director
-  ite_sns RB do |note|
-      play note
-  end
+  notes_b.go
 end
 
 live_loop :c do
   sync :director
-  ite_sns RC do |note|
-      play note
-  end
+  notes_c.go
 end
 
 live_loop :d do
   sync :director
-  ite_sns RD do |note|
-      play note
-  end
+  notes_d.go
 end
 
 live_loop :e do
   sync :director
-  ite_sns RE do |note|
-      play note
-  end
+  notes_e.go
 end
