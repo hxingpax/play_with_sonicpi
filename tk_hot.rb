@@ -48,42 +48,24 @@ E = [:a2, nil, :a3, nil, :a2, nil, :a3, nil, :a2, nil, :a3, nil, :a2, nil, :a3, 
      :f2, nil, :f3, nil, :f2, nil, :f3, nil, :f2, nil, :f3, nil, :f2, nil, :f3, nil,
      :d3, nil, :d4, nil, :d3, nil, :d4, nil, :e3, nil, :e4, nil, :e3, nil, :e4, nil]
 
-notes_a = MyNotes.new(A, 4)
-notes_b = MyNotes.new(B, 4)
-notes_c = MyNotes.new(C, 4)
-notes_d = MyNotes.new(D, 4)
-notes_e = MyNotes.new(E, 4)
+notes = {
+  a: MyNotes.new(A, 4),
+  b: MyNotes.new(B, 4),
+  c: MyNotes.new(C, 4),
+  d: MyNotes.new(D, 4),
+  e: MyNotes.new(E, 4)
+}
 
-raise '!' unless notes_a.n_beats == notes_b.n_beats &&
-    notes_a.n_beats == notes_c.n_beats &&
-    notes_a.n_beats == notes_d.n_beats &&
-    notes_a.n_beats == notes_e.n_beats
+n_beats_values = notes.values.map(&:n_beats)
+raise '!' unless n_beats_values.uniq.size == 1
 
 live_loop :director do
-  sleep notes_a.n_beats
+  sleep notes[:a].n_beats
 end
 
-live_loop :a do
-  sync :director
-  notes_a.go
-end
-
-live_loop :b do
-  sync :director
-  notes_b.go
-end
-
-live_loop :c do
-  sync :director
-  notes_c.go
-end
-
-live_loop :d do
-  sync :director
-  notes_d.go
-end
-
-live_loop :e do
-  sync :director
-  notes_e.go
+notes.each do |name, notes_obj|
+  live_loop name do
+    sync :director
+    notes_obj.go
+  end
 end
