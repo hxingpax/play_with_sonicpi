@@ -29,3 +29,11 @@
 2. “塞尔达主题曲”确认是指 **Overworld 主旋律**（最常被叫“塞尔达主题曲”的那段）吗？还是指标题界面曲 / Zelda's Lullaby 等其它段落？
 3. 旋律我会凭记忆转写成 Sonic Pi 音符数组，老板能否在 Sonic Pi 里试听后帮我修正个别音符？（仓库现有 `mario.rb` 也是逐版打磨的，我可以先把结构与主旋律骨架搭好。）
 
+
+<!-- dlion:proposal-review ts=2026-07-23T23:52:03.988933Z -->
+>> DlionProposal.md
+
+
+>> DlionProposal.md L21 「新建 `zelda.rb`（推荐）- 不破坏现有 `mario.rb`（马里奥主题曲）；符合仓库小写描述性命名习惯；可像 `tk_hot.rb` 一样自包含（`comment do require_relative 'bk.rb' end` 桩 + 音符数组 + `live_loop :director`）。」
+
+✅ 采纳选项：新建 `zelda.rb`（推荐）- 不破坏现有 `mario.rb`（马里奥主题曲）；符合仓库小写描述性命名习惯；可像 `tk_hot.rb` 一样自包含（`comment do require_relative 'bk.rb' end` 桩 + 音符数组 + `live_loop :director`）。
